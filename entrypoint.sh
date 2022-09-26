@@ -12,5 +12,5 @@ echo "VERSION=$VERSION" >> $GITHUB_ENV
 sudo -s -u builduser -- <<EOF
 spectool -g "$1.spec"
 fedpkg --release f$(rpm -E %fedora) srpm
-mock -r fedora-$(rpm -E %fedora)-$(uname -m)-rpmfusion_free --rebuild "$1-$VERSION.src.rpm" --enable-network --isolation=simple
+mock -r fedora-$(rpm -E %fedora)-$(uname -m)-rpmfusion_free --rebuild "$1"-*.src.rpm --enable-network --isolation=simple
 EOF
