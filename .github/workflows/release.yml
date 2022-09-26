@@ -1,0 +1,45 @@
+name: Create release
+
+on:
+  push:
+
+jobs:
+  kotatogram-desktop:
+    runs-on: ubuntu-latest
+    name: Build and publish rpm
+    container:
+      image: "registry.fedoraproject.org/fedora:37"
+      options: --privileged
+      volumes:
+        - /sys/fs/cgroup:/sys/fs/cgroup
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
+        run: |
+          echo 'max_parallel_downloads=20' >> /etc/dnf/dnf.conf && \
+          dnf -y up && \
+          dnf -y install fedora-packager rpmdevtools sudo https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
+          https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm && \
+          dnf -y install mock-rpmfusion-free && \
+          useradd -m -G mock builduser && \
+          echo 'builduser ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/builduser && \
+          chown -R builduser:builduser ./
+          bash entrypoint.sh vmware-workstation-kmod
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        if: success() || failure()
+        with:
+          name: build-${{ env.VERSION }}
+          path: /var/lib/mock/fedora-37-x86_64/result/*
+
+      - name: Create release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: /var/lib/mock/fedora-37-x86_64/result/*
+          title: vmware-workstation-kmod-${{ env.VERSION }}
+          automatic_release_tag: ${{ env.VERSION }}
