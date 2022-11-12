@@ -12,6 +12,6 @@ spectool -g "$package.spec"
 fedpkg --release f$(rpm -E %fedora) srpm
 mock -r fedora-$(rpm -E %fedora)-$(uname -m)-rpmfusion_free --rebuild "$package"-*.src.rpm
 EOF
-mv /var/lib/mock/fedora-37-x86_64/result/*.rpm /out
+mv /var/lib/mock/fedora-37-x86_64/result/{akmod*,*common*} /out
 popd
 done
