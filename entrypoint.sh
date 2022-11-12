@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euxo pipefail
-
+shopt -s nullglob
 mkdir /out
 for package in "$@"
 do
