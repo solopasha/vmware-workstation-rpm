@@ -9,7 +9,7 @@
 %endif
 
 %global forgeurl https://github.com/mkubecek/vmware-host-modules
-%global commit   5389d2915b66da4d614d9134411a72099ef0e1ab
+%global commit   cec0e8be41c5c00e6d0fe37fc04539b2f1209892
 %forgemeta
 
 Name:          vmware-workstation-kmod
