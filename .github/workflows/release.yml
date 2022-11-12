@@ -26,20 +26,20 @@ jobs:
           useradd -m -G mock builduser && \
           echo 'builduser ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/builduser && \
           chown -R builduser:builduser ./
-          bash entrypoint.sh vmware-workstation-kmod
+          bash entrypoint.sh vmware-workstation-kmod vmware-workstation-kmod-common
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         if: success() || failure()
         with:
           name: build-${{ env.VERSION }}
-          path: /var/lib/mock/fedora-37-x86_64/result/*
+          path: /out/*
 
       - name: Create release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          files: /var/lib/mock/fedora-37-x86_64/result/*
+          files: /out/*
           title: vmware-workstation-kmod-${{ env.VERSION }}
           automatic_release_tag: ${{ env.VERSION }}

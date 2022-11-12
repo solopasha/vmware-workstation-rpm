@@ -1,16 +1,17 @@
 #!/bin/bash
 set -euxo pipefail
 
-pushd "$1"
-
-if [ -z "$1" ]; then
-    echo "Please specify package to build"
-    exit 1
-fi
-VERSION="$(rpmspec -q --qf "%{version}-%{release}\n" "$1.spec" | head -1)"
+mkdir /out
+for package in "$@"
+do
+pushd "$package"
+VERSION="$(rpmspec -q --qf "%{version}-%{release}\n" "$package.spec" | head -1)"
 echo "VERSION=$VERSION" >> $GITHUB_ENV
 sudo -s -u builduser -- <<EOF
-spectool -g "$1.spec"
+spectool -g "$package.spec"
 fedpkg --release f$(rpm -E %fedora) srpm
-mock -r fedora-$(rpm -E %fedora)-$(uname -m)-rpmfusion_free --rebuild "$1"-*.src.rpm --enable-network --isolation=simple
+mock -r fedora-$(rpm -E %fedora)-$(uname -m)-rpmfusion_free --rebuild "$package"-*.src.rpm
 EOF
+mv /var/lib/mock/fedora-37-x86_64/result/*.rpm /out
+popd
+done
