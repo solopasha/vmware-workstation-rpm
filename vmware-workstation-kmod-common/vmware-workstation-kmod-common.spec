@@ -1,5 +1,5 @@
 Name:           vmware-workstation-kmod-common
-Version:        16.2.4
+Version:        17.0.0
 Release:        1%{?dist}
 Summary:        Dummy dep for kmod
 

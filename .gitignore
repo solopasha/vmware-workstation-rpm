@@ -1,3 +1,4 @@
 **/*.src.rpm
 **/*.tar*
 **/*.bundle
+results_*/

@@ -1,19 +1,19 @@
 %global debug_package %{nil}
 %global __brp_check_rpaths %{nil}
-%global buildver 20089737
+%global buildver 20800274
 %global pkgver %(echo %{version}_%{buildver})
 %global __provides_exclude_from ^(%{_libdir}/vmware/(lib|libconf)/.*\\.so.*|%{_libdir}/vmware-installer/.*|%{_libdir}/vmware-ovftool/.*|%{_libdir}/vmware-vix/.*)$
 %global __requires_exclude ^libvim-types|libcroco-0.6|libbasichttp|libcds|libcrypto|libexpat|libgoogleurl|libgvmomi|libicudata|libicuuc|libssl|libssoclient|libvmacore|libvmomi|libvmwarebase|libvmwareui|libvnetlib|libbz2|libgdbm|libgdbm_compat.*$
 
 
 Name:          vmware-workstation
-Version:       16.2.4
-Release:       6%{?dist}
+Version:       17.0.0
+Release:       1%{?dist}
 Summary:       The industry standard for running multiple operating systems as virtual machines on a single Linux PC
 
 License:       Proprietary
 URL:           https://www.vmware.com/products/workstation-for-linux.html
-Source0:       https://download3.vmware.com/software/WKST-1624-LX/VMware-Workstation-Full-16.2.4-20089737.x86_64.bundle
+Source0:       https://download3.vmware.com/software/WKST-%(echo %{version} | sed 's/\.//g')-LX/VMware-Workstation-Full-%{version}-%{buildver}.x86_64.bundle
 Source1:       vmware-networks.service
 Source2:       vmware-networks-configuration.service
 Source3:       vmware-usbarbitrator.service
@@ -91,7 +91,7 @@ cp -r \
     "%{buildroot}/usr/lib64/vmware/setup"
 
 cp -r \
-    vmware-vix-lib-Workstation1600/lib/Workstation-16.0.0 \
+    vmware-vix-lib-Workstation1700/lib/Workstation-17.0.0 \
     vmware-vix-core/{lib/*,vixwrapper-config.txt} \
     "%{buildroot}/usr/lib64/vmware-vix"
 
