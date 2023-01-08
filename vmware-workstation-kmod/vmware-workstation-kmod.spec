@@ -10,16 +10,16 @@
 
 %global forgeurl https://github.com/mkubecek/vmware-host-modules
 %global commit   81b940e4593485f39780c542753ba64f6fd6bc59
-%forgemeta
 
 Name:          vmware-workstation-kmod
 Version:       17.0.0
-# Taken over by kmodtool
 Release:       1%{?dist}
 Summary:       VMware kernel modules
+
+%forgemeta
+
 License:       GPLv2
 URL:           %{forgeurl}
-
 Source0:       %{forgesource}
 
 # needed for plague to make sure it builds for i586 and i686
