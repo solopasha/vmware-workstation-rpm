@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euxo pipefail
 shopt -s nullglob
+shopt -s extglob
 mkdir /out
 for package in "$@"
 do
@@ -12,6 +13,6 @@ spectool -g "$package.spec"
 fedpkg --release f$(rpm -E %fedora) srpm
 mock -r fedora-$(rpm -E %fedora)-$(uname -m)-rpmfusion_free --rebuild "$package"-*.src.rpm
 EOF
-mv /var/lib/mock/fedora-37-x86_64/result/{akmod*,*common*} /out
+mv /var/lib/mock/fedora-37-x86_64/result/{akmod*,*common!(*.src.rpm)} /out
 popd
 done
