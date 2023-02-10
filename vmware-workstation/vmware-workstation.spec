@@ -1,13 +1,14 @@
 %global debug_package %{nil}
+%global _build_id_links none
 %global __brp_check_rpaths %{nil}
-%global buildver 20800274
+%global buildver 21139696
 %global pkgver %(echo %{version}_%{buildver})
 %global __provides_exclude_from ^(%{_libdir}/vmware/(lib|libconf)/.*\\.so.*|%{_libdir}/vmware-installer/.*|%{_libdir}/vmware-ovftool/.*|%{_libdir}/vmware-vix/.*)$
-%global __requires_exclude ^libvim-types|libcroco-0.6|libbasichttp|libcds|libcrypto|libexpat|libgoogleurl|libgvmomi|libicudata|libicuuc|libssl|libssoclient|libvmacore|libvmomi|libvmwarebase|libvmwareui|libvnetlib|libbz2|libgdbm|libgdbm_compat.*$
+%global __requires_exclude ^libpython3.10|libvim-types|libcroco-0.6|libbasichttp|libcds|libcrypto|libexpat|libgoogleurl|libgvmomi|libicudata|libicuuc|libssl|libssoclient|libvmacore|libvmomi|libvmwarebase|libvmwareui|libvnetlib|libbz2|libgdbm|libgdbm_compat.*$
 
 
 Name:          vmware-workstation
-Version:       17.0.0
+Version:       17.0.1
 Release:       1%{?dist}
 Summary:       The industry standard for running multiple operating systems as virtual machines on a single Linux PC
 
