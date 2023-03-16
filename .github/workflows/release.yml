@@ -26,7 +26,7 @@ jobs:
           useradd -m -G mock builduser && \
           echo 'builduser ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/builduser && \
           chown -R builduser:builduser ./
-          bash entrypoint.sh vmware-workstation-kmod vmware-workstation-kmod-common
+          bash entrypoint.sh vmware-workstation-kmod-common vmware-workstation-kmod
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
