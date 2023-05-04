@@ -12,8 +12,8 @@
 %global commit   650fb3abeb82f2b7d3a14f9579a7529d153636b7
 
 Name:          vmware-workstation-kmod
-Version:       17.0.1
-Release:       3%{?dist}
+Version:       17.0.2
+Release:       1%{?dist}
 Summary:       VMware kernel modules
 
 %forgemeta

@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and publish rpm
     container:
-      image: "registry.fedoraproject.org/fedora:37"
+      image: "registry.fedoraproject.org/fedora:38"
       options: --privileged
       volumes:
         - /sys/fs/cgroup:/sys/fs/cgroup
