@@ -9,11 +9,11 @@
 %endif
 
 %global forgeurl https://github.com/mkubecek/vmware-host-modules
-%global commit   8b2d31498a8df9b1215f407c989b065953b73455
+%global commit   b049eda89ec1245a33c22f5d114f2d0396d5be65
 
 Name:          vmware-workstation-kmod
 Version:       17.0.2
-Release:       2%{?dist}
+Release:       3%{?dist}
 Summary:       VMware kernel modules
 
 %forgemeta
