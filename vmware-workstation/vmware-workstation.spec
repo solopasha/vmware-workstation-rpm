@@ -311,5 +311,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/vmware*.desktop
 %systemd_postun vmware-networks.service vmware-networks-configuration.service vmware-usbarbitrator.service vmware-networks.path vmware-usbarbitrator.path
 
 %changelog
-* Tue Sep 06 2022 solopasha <pasha@solopasha.ru> - 16.2.4-1
+* Tue Sep 06 2022 solopasha <daron439@gmail.com> - 16.2.4-1
 - Initial packaging
