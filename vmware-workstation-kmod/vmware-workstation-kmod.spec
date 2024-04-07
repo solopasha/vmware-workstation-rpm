@@ -9,28 +9,23 @@
 %endif
 
 %global forgeurl https://github.com/mkubecek/vmware-host-modules
-%global commit 29de7e2bd45d32e6983106d6f15810c70ba3e654
+%global commit 2c6d66f3f1947384038b765c897b102ecdb18298
 
 Name:          vmware-workstation-kmod
-Version:       17.0.2
-Release:       4%{?dist}
+Version:       17.5.1
+Release:       1%{?dist}
 Summary:       VMware kernel modules
 
 %forgemeta
 
 License:       GPLv2
 URL:           %{forgeurl}
-Source0:       %{forgesource}
+Source:        %{forgesource}
 
-# needed for plague to make sure it builds for i586 and i686
-ExclusiveArch:  x86_64
+BuildRequires:  kmodtool
 
-# get the needed BuildRequires (in parts depending on what we build for)
-BuildRequires:  %{_bindir}/kmodtool
-
-%{!?kernels:BuildRequires: gcc, elfutils-libelf-devel, buildsys-build-rpmfusion-kerneldevpkgs-%{?buildforkernels:%{buildforkernels}}%{!?buildforkernels:current}-%{_target_cpu} }
 # kmodtool does its magic here
-%{expand:%(kmodtool --target %{_target_cpu} --repo rpmfusion --kmodname %{name} %{?buildforkernels:--%{buildforkernels}} %{?kernels:--for-kernels "%{?kernels}"} 2>/dev/null) }
+%{expand:%(kmodtool --target %{_target_cpu} --kmodname %{name} %{?buildforkernels:--%{buildforkernels}} %{?kernels:--for-kernels "%{?kernels}"} 2>/dev/null) }
 
 %description
 The VMware %{version} driver kernel modules for kernel %{kversion}.
@@ -39,7 +34,7 @@ The VMware %{version} driver kernel modules for kernel %{kversion}.
 # error out if there was something wrong with kmodtool
 %{?kmodtool_check}
 # print kmodtool output for debugging purposes:
-kmodtool --target %{_target_cpu} --repo rpmfusion --kmodname %{name} %{?buildforkernels:--%{buildforkernels}} %{?kernels:--for-kernels "%{?kernels}"} 2>/dev/null
+kmodtool --target %{_target_cpu} --kmodname %{name} %{?buildforkernels:--%{buildforkernels}} %{?kernels:--for-kernels "%{?kernels}"} 2>/dev/null
 %forgesetup
 
 for kernel_version  in %{?kernel_versions} ; do
@@ -65,5 +60,8 @@ done
 %{?akmod_install}
 
 %changelog
+* Sun Apr 07 2024 solopasha <daron439@gmail.com> - 17.5.1-1
+- Update to 17.5.1
+
 * Tue Sep 06 2022 solopasha <daron439@gmail.com> - 16.2.4-1
 - Initial packaging

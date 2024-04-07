@@ -11,8 +11,8 @@ echo "VERSION=$VERSION" >> $GITHUB_ENV
 sudo -s -u builduser -- <<EOF
 spectool -g "$package.spec"
 fedpkg --release f$(rpm -E %fedora) srpm
-mock -r fedora-$(rpm -E %fedora)-$(uname -m)-rpmfusion_free --rebuild "$package"-*.src.rpm
+mock -r fedora-$(rpm -E %fedora)-$(uname -m) --rebuild "$package"-*.src.rpm
 EOF
-mv /var/lib/mock/fedora-38-x86_64/result/{akmod*,*common!(*.src.rpm)} /out
+mv /var/lib/mock/fedora-$(rpm -E %fedora)-x86_64/result/{akmod*,*common!(*.src.rpm)} /out
 popd
 done

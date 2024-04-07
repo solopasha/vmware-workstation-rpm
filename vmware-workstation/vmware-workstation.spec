@@ -1,14 +1,14 @@
 %global debug_package %{nil}
 %global _build_id_links none
 %global __brp_check_rpaths %{nil}
-%global buildver 21581411
+%global buildver 23298084
 %global pkgver %(echo %{version}_%{buildver})
 %global __provides_exclude_from ^(%{_libdir}/vmware/(lib|libconf)/.*\\.so.*|%{_libdir}/vmware-installer/.*|%{_libdir}/vmware-ovftool/.*|%{_libdir}/vmware-vix/.*)$
-%global __requires_exclude ^libpython3.10|libvim-types|libcroco-0.6|libbasichttp|libcds|libcrypto|libexpat|libgoogleurl|libgvmomi|libicudata|libicuuc|libssl|libssoclient|libvmacore|libvmomi|libvmwarebase|libvmwareui|libvnetlib|libbz2|libgdbm|libgdbm_compat.*$
+%global __requires_exclude ^libffi|libpython3.10|libvim-types|libcroco-0.6|libbasichttp|libcds|libcrypto|libexpat|libgoogleurl|libgvmomi|libicudata|libicuuc|libssl|libssoclient|libvmacore|libvmomi|libvmwarebase|libvmwareui|libvnetlib|libbz2|libgdbm|libgdbm_compat.*$
 
 
 Name:          vmware-workstation
-Version:       17.0.2
+Version:       17.5.1
 Release:       1%{?dist}
 Summary:       The industry standard for running multiple operating systems as virtual machines on a single Linux PC
 
@@ -33,7 +33,6 @@ BuildRequires: desktop-file-utils
 BuildRequires: chrpath
 
 Requires:      hicolor-icon-theme
-Requires:      libxcrypt-compat
 Requires:      %{name}-kmod >= %{version}
 Provides:      %{name}-kmod-common = %{version}-%{release}
 
@@ -55,11 +54,11 @@ _isoimages=(linux linuxPreGlibc25 netware solaris windows winPre2k winPreVista)
 _isovirtualprinterimages=(Linux Windows)
 vmware_installer_version=$(cat "%{_builddir}/extracted/vmware-installer/manifest.xml" | grep -oPm1 "(?<=<version>)[^<]+")
 mkdir -p \
-    "%{buildroot}/etc"/{cups,modprobe.d,thnuclnt,vmware} \
+    "%{buildroot}/etc"/{modprobe.d,vmware} \
     "%{buildroot}/usr"/{share,bin} \
     "%{buildroot}/usr/include/vmware-vix" \
     "%{buildroot}/usr/lib64"/{vmware/setup,vmware-vix,vmware-ovftool,vmware-installer/"$vmware_installer_version"} \
-    "%{buildroot}/usr/lib"/{modules-load.d,cups/filter} \
+    "%{buildroot}/usr/lib/modules-load.d" \
     "%{buildroot}/usr/share"/{doc/vmware-vix,licenses/"%{name}"} \
     "%{buildroot}/var/lib/vmware/Shared VMs"
 cd "%{_builddir}/extracted"
@@ -109,29 +108,12 @@ cp -r \
     "%{buildroot}/usr/lib64/vmware-installer/$vmware_installer_version"
 
 cp -r \
-    vmware-player-app/etc/cups/* \
-    "%{buildroot}/etc/cups"
-
-cp -r \
-    vmware-player-app/extras/.thnumod \
-    "%{buildroot}/etc/thnuclnt"
-
-cp -r \
-    vmware-player-app/extras/thnucups \
-    "%{buildroot}/usr/lib/cups/filter"
-
-cp -r \
     vmware-vix-core/include/* \
     "%{buildroot}/usr/include/vmware-vix"
 
 for isoimage in ${_isoimages[@]}
 do
     install -Dm 644 "vmware-tools-$isoimage/$isoimage.iso" "%{buildroot}/usr/lib64/vmware/isoimages/$isoimage.iso"
-done
-
-for isoimage in ${_isovirtualprinterimages[@]}
-do
-    install -Dm 644 "vmware-virtual-printer/VirtualPrinter-$isoimage.iso" "%{buildroot}/usr/lib64/vmware/isoimages/VirtualPrinter-$isoimage.iso"
 done
 
 install -Dm 644 "vmware-workstation/doc/EULA" "%{buildroot}/usr/share/doc/vmware-workstation/EULA"
@@ -169,9 +151,7 @@ chmod +x \
 "%{buildroot}/usr/lib64/vmware/lib/libvmware-gksu.so/gksu-run-helper" \
 "%{buildroot}/usr/lib64/vmware-ovftool"/{ovftool,ovftool.bin} \
 "%{buildroot}/usr/lib64/vmware-installer/$vmware_installer_version"/{vmware-installer,vmis-launcher} \
-"%{buildroot}/usr/lib/cups/filter"/* \
-"%{buildroot}/usr/lib64/vmware-vix/setup"/* \
-"%{buildroot}/etc/thnuclnt/.thnumod"
+"%{buildroot}/usr/lib64/vmware-vix/setup"/*
 
 chmod +s \
 "%{buildroot}/usr/bin"/vmware-authd \
@@ -251,7 +231,7 @@ sqlite3 "$database_filename" "CREATE TABLE components(id INTEGER PRIMARY KEY, na
 for isoimage in ${_isoimages[@]}
 do
     version=$(cat "%{_builddir}/extracted/vmware-tools-$isoimage/manifest.xml" | grep -oPm1 "(?<=<version>)[^<]+")
-    sqlite3 "$database_filename" "INSERT INTO components(name,version,buildNumber,component_core_id,longName,description,type) VALUES(\"vmware-tools-$isoimage\",\"$version\",\"%{buildver}\",1,\"$isoimage\",\"$isoimage\",1);"
+    sqlite3 "$database_filename" "INSERT INTO components(name,version,buildNumber,component_core_id,longName,description,type) VALUES('vmware-tools-$isoimage','$version','%{buildver}',1,'$isoimage','$isoimage',1);"
 done
 
 # Define some environment variables for VMware and remove the tests about kernel modules
@@ -281,25 +261,25 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/vmware*.desktop
 %dir %{_sysconfdir}/vmware
 %{_sysconfdir}/vmware/bootstrap
 %{_sysconfdir}/vmware/icu
-%dir %{_sysconfdir}/thnuclnt
-%{_sysconfdir}/thnuclnt/.thnumod
 %{_sysconfdir}/modprobe.d/*
-%{_sysconfdir}/cups/*
-%{_mandir}/*
-%{_datadir}/applications/vmware-*
+%{_bindir}/ovftool
+%{_bindir}/vm*
 %{_datadir}/appdata/vmware*.appdata.xml
-%{_datadir}/mime/packages/vmware*
+%{_datadir}/applications/vmware-*
 %{_datadir}/icons/hicolor/*
-%{_unitdir}/vmware*
-%{_prefix}/lib/modules-load.d/vmware.conf
-%{_prefix}/lib/cups/*
-%{_includedir}/vmware*
-%{_bindir}/*
-%{_libdir}/vmware*
+%{_datadir}/mime/packages/vmware*
+%{_includedir}/vmware-vix/
 %{_libdir}/libvixAllProducts.so
+%{_libdir}/vmware-installer/
+%{_libdir}/vmware-ovftool/
+%{_libdir}/vmware-vix/
+%{_libdir}/vmware/
+%{_mandir}/man1/vmware.1.*
+%{_prefix}/lib/modules-load.d/vmware.conf
+%{_unitdir}/vmware*.service
+%{_unitdir}/vmware*.path
 %config(noreplace) %{_sysconfdir}/vmware/config
 %config(noreplace) %{_sysconfdir}/conf.d/vmware
-
 
 %post
 %systemd_post vmware-networks.service vmware-networks-configuration.service vmware-usbarbitrator.service vmware-networks.path vmware-usbarbitrator.path
@@ -311,5 +291,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/vmware*.desktop
 %systemd_postun vmware-networks.service vmware-networks-configuration.service vmware-usbarbitrator.service vmware-networks.path vmware-usbarbitrator.path
 
 %changelog
+* Sun Apr 07 2024 solopasha <daron439@gmail.com> - 17.5.1-1
+- Update to 17.5.1
+
 * Tue Sep 06 2022 solopasha <daron439@gmail.com> - 16.2.4-1
 - Initial packaging

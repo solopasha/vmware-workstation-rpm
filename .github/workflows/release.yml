@@ -4,32 +4,34 @@ on:
   push:
 
 jobs:
-  kotatogram-desktop:
+  akmod:
     runs-on: ubuntu-latest
     name: Build and publish rpm
     container:
-      image: "registry.fedoraproject.org/fedora:38"
+      image: "registry.fedoraproject.org/fedora-minimal:39"
       options: --privileged
       volumes:
         - /sys/fs/cgroup:/sys/fs/cgroup
 
     steps:
+      - name: Prepare
+        run: |
+          echo 'max_parallel_downloads=20' >> /etc/dnf/dnf.conf
+          dnf5 -y up
+          dnf5 -y install fedora-packager rpmdevtools sudo
+          useradd -m -G mock builduser
+          echo 'builduser ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/builduser
+
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
       - name: Build
         run: |
-          echo 'max_parallel_downloads=20' >> /etc/dnf/dnf.conf && \
-          dnf -y up && \
-          dnf -y install fedora-packager rpmdevtools sudo https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
-          https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm && \
-          dnf -y install mock-rpmfusion-free && \
-          useradd -m -G mock builduser && \
-          echo 'builduser ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/builduser && \
           chown -R builduser:builduser ./
           bash entrypoint.sh vmware-workstation-kmod-common vmware-workstation-kmod
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: build-${{ env.VERSION }}
